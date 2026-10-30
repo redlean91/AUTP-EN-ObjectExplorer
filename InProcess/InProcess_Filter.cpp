@@ -90,7 +90,7 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 EXTERN_C AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 {
 	static char name[MAX_PATH] = "ObjectExplorer";
-	static char information[MAX_PATH] = "ObjectExplorer for AviUtl 1.10 v3.6.1 by hebiiro, edited by Redlean";
+	static char information[MAX_PATH] = "ObjectExplorer for AviUtl 1.10 v3.6.2 by hebiiro, edited by Redlean";
 
 	char fileName[MAX_PATH] = {};
 	::GetModuleFileNameA(theApp.m_instance, fileName, MAX_PATH);

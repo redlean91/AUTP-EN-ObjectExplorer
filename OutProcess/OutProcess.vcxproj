@@ -156,7 +156,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../;../../;../../AviUtl/aviutl_exedit_sdk/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Redlean\Documents\SDK\aviutl_exedit_sdk;C:\Users\Redlean\Documents\SDK;../;../../;../../AviUtl/aviutl_exedit_sdk/</AdditionalIncludeDirectories>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
