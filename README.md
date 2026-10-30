@@ -1,132 +1,142 @@
-﻿# AviUtl プラグイン - オブジェクトエクスプローラ
+﻿# AviUtl Plugin - Object Explorer
 
-エクスプローラを表示してエイリアス、オブジェクト、素材ファイルを使いやすくします。
-[最新バージョンをダウンロード](../../releases/latest/)
+## DISCLAMER: This plugin is not mine!!!, i simply translated it to English and applied some modifications
 
-## 導入方法
+**This plugin has been translated in favour of the **A.U.T.P. (AviUtl Translation Project)** 
 
-以下のファイルとフォルダを AviUtl の Plugins フォルダに入れてください。
+Displays an Explorer window to make aliases, objects, and material files easier to work with.
+[Download the latest version](../../releases/latest/)
+
+## Installation
+
+Put the following files and folders into AviUtl's Plugins folder.
 * ObjectExplorer.auf
-* ObjectExplorer (フォルダ)
-* セカンドエクスプローラ.auf (複数のウィンドウが必要な場合)
-* セカンドエクスプローラ (フォルダ) (複数のウィンドウが必要な場合)
+* ObjectExplorer (folder)
+* セカンドエクスプローラ.auf (Second Explorer; if you need multiple windows)
+* セカンドエクスプローラ (folder) (Second Explorer; if you need multiple windows)
 
-## 使用方法
+## Changing ExEdit filter name
+If you're using a custom **ExEdit** with a different filter name, you can change it's name after running it for the first time in the file called: **ObjectExplorerConfig.ini**.
 
-### オブジェクトエクスプローラを表示する
+The file will be located beside the **AviUtl** executable and not the pluugin.
 
-1. 「表示」→「オブジェクトエクスプローラの表示」を選択します。
-2. オブジェクトエクスプローラが表示されます。
-3. オブジェクトエクスプローラは通常のエクスプローラとほぼ同じように使用できます。
+## Usage
 
-### ツリービューの表示/非表示を切り替える
+### Show the Object Explorer
 
-1. 上部のボタンを右クリックして「ツリービューを表示/非表示」を選択します。
+1. Select "View" → "Show Object Explorer".
+2. The Object Explorer is displayed.
+3. The Object Explorer can be used almost the same way as a normal Explorer.
 
-### ボイスを有効にする
+### Toggle the tree view on/off
 
-1. [WavPlayer](../../../WavPlayer/) を導入します。
-2. 上部のボタンを右クリックして「声で知らせる」を選択してチェックを付けます。
+1. Right-click the buttons at the top and select "Show/Hide tree view".
 
-### ボイスを無効にする
+### Enable voice
 
-1. 上部のボタンを右クリックして「声で知らせる」を選択してチェックを外します。
+1. Install [WavPlayer](../../../WavPlayer/).
+2. Right-click the buttons at the top and select "Notify by voice" to check it.
 
-### コモンダイアログを使用しない
+### Disable voice
 
-1. 上部のボタンを右クリックして「コモンダイアログを使用する」を選択してチェックを外します。
+1. Right-click the buttons at the top and select "Notify by voice" to uncheck it.
 
-### ウィンドウを増やす
+### Don't use the common dialog
 
-1. ObjectExplorer.auf と ObjectExplorer フォルダのコピーを作成する。
-2. 識別しやすい任意の名前 (例えばサードエクスプローラなど) にリネームする。
+1. Right-click the buttons at the top and select "Use common dialog" to uncheck it.
 
-### お気に入りフォルダを登録する
+### Increase the number of windows
 
-1. 登録したいフォルダに移動します。
-2. 上部のボタンを右クリックして「お気に入りに追加」を選択します。
+1. Make a copy of ObjectExplorer.auf and the ObjectExplorer folder.
+2. Rename them to any easily recognizable name (for example, "Third Explorer").
 
-### お気に入りフォルダに移動する
+### Register a favorite folder
 
-1. コンボボックスのドロップダウンボタンを押します。
-2. ドロップダウンボタンリストの中から移動したいフォルダを選択します。
+1. Navigate to the folder you want to register.
+2. Right-click the buttons at the top and select "Add to favorites".
 
-### アイテムに関連したフォルダに移動する
+### Move to a favorite folder
 
-1. タイムラインで動画ファイルなどのアイテムを選択します。
-2. オブジェクトエクスプローラで「取得」ボタンを押します。
+1. Press the dropdown button of the combo box.
+2. Select the folder you want to go to from the dropdown list.
 
-### 検索(フィルタリング)する
+### Move to the folder related to an item
 
-1. 右上のエディットボックスに検索したいテキストを入力します。
-2. Enter キーを押します。
+1. Select an item such as a video file on the timeline.
+2. Press the "Get" button in the Object Explorer.
 
-※フォルダはフィルタリングされません。
+### Search (filter)
 
-### 拡張編集ウィンドウでエイリアスファイルを作成する
+1. Enter the text you want to search for in the edit box at the upper right.
+2. Press the Enter key.
 
-1. タイムラインでアイテムを右クリックして「エイリアスを作成」を選択します。
-2. 拡張編集独自のダイアログではなく通常のファイル選択ダイアログが表示されます。
-このとき最初に表示されるフォルダはオブジェクトエクスプローラで現在表示しているフォルダになります。
-3. 通常のファイルのようにエイリアスファイルを保存します。
+*Note: Folders are not filtered.
 
-### 拡張編集ウィンドウでエイリアスファイルを読み込む
+### Create an alias file in the Extended Editing window
 
-1. オブジェクトエクスプローラからタイムライン上にエイリアスファイルをドラッグアンドドロップします。
-2. ファイルが読み込まれ、タイムライン上にアイテムが生成されます。(拡張編集の通常の動作)
+1. Right-click an item on the timeline and select "Create alias".
+2. A normal file selection dialog is displayed instead of Extended Editing's own dialog.
+   The folder shown first is the folder currently displayed in the Object Explorer.
+3. Save the alias file like a normal file.
 
-### 設定ダイアログでエイリアスファイルを作成する
+### Load an alias file in the Extended Editing window
 
-1. 設定ダイアログで右クリックして「設定の保存」→「現在の設定でエイリアスを作成する」を選択します。
-2. 拡張編集ウィンドウのときと同じ手順でエイリアスファイルを保存します。
+1. Drag and drop the alias file from the Object Explorer onto the timeline.
+2. The file is loaded and an item is generated on the timeline. (This is Extended Editing's normal behavior.)
 
-### 設定ダイアログでエイリアスファイルを読み込む
+### Create an alias file in the settings dialog
 
-1. オブジェクトエクスプローラから設定ダイアログにエイリアスファイルをドラッグアンドドロップします。
-2. エイリアスファイルに含まれている複数のフィルタが選択アイテムに付与されます。
+1. Right-click in the settings dialog and select "Save settings" → "Create alias with current settings".
+2. Save the alias file using the same procedure as in the Extended Editing window.
 
-## 設定方法
+### Load an alias file in the settings dialog
 
-ObjectExplorerSettings.xml をテキストエディタで編集します。
+1. Drag and drop the alias file from the Object Explorer onto the settings dialog.
+2. The multiple filters contained in the alias file are applied to the selected item.
 
-## 更新履歴
+## Configuration
 
-* 3.6.1 - 2023/02/21 WavPlayer が存在しないときにエラーメッセージが出ていた問題を修正
-* 3.6.0 - 2023/02/16 SplitWindow に合わせて終了処理を調整
-* 3.5.0 - 2023/01/10 検索(フィルタリング)機能を追加
-* 3.4.0 - 2023/01/07 音を外部プロセスで鳴らすように変更
-* 3.3.0 - 2022/08/31 コモンダイアログを使用するか選べるように修正
-* 3.2.1 - 2022/08/02 ドキュメントの誤りを修正
-* 3.2.0 - 2022/07/28 エクスプローラを複数表示できるように修正
-* 3.1.0 - 2022/07/26 ツリービューの表示/非表示を切り替えられるように修正
-* 3.0.1 - 2022/07/10 表示設定が永続化するように修正
-* 3.0.0 - 2022/06/26 外部プロセスのダイアログを子ウィンドウに変更
-* 2.2.0 - 2022/05/30 DarkenWindow の仕様変更に対応
-* 2.1.0 - 2022/05/13 DarkenWindow.aul が存在する場合は読み込むように修正
-* 2.0.2 - 2022/05/12 特定のオブジェクト名のときエイリアスの保存ができない問題を修正
-* 2.0.1 - 2022/05/05 設定ダイアログのドラッグアンドドロップでデフォルト処理が実行されない問題を修正
-* 2.0.0 - 2022/05/05 リファクタリング
-* 1.0.0 - 2022/04/05 初版
+Edit ObjectExplorerSettings.xml with a text editor.
 
-## 動作確認
+## Changelog
 
-* (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r42 https://scrapbox.io/ePi5131/patch.aul
+* 3.6.2 - 2026/10/30 Added **ExEdit** filter name change with a config file and changed AviUtlInternals.h with a custom one to make it work.
+* 3.6.1 - 2023/02/21 Fixed an issue where an error message appeared when WavPlayer was not present
+* 3.6.0 - 2023/02/16 Adjusted shutdown processing to match SplitWindow
+* 3.5.0 - 2023/01/10 Added search (filtering) feature
+* 3.4.0 - 2023/01/07 Changed sounds to play in an external process
+* 3.3.0 - 2022/08/31 Added an option to choose whether to use the common dialog
+* 3.2.1 - 2022/08/02 Fixed errors in the documentation
+* 3.2.0 - 2022/07/28 Made it possible to display multiple Explorers
+* 3.1.0 - 2022/07/26 Made it possible to toggle the tree view on/off
+* 3.0.1 - 2022/07/10 Fixed display settings so they persist
+* 3.0.0 - 2022/06/26 Changed external process dialogs to child windows
+* 2.2.0 - 2022/05/30 Adapted to specification changes in DarkenWindow
+* 2.1.0 - 2022/05/13 Fixed to load DarkenWindow.aul if it exists
+* 2.0.2 - 2022/05/12 Fixed an issue where aliases could not be saved for certain object names
+* 2.0.1 - 2022/05/05 Fixed an issue where default processing was not executed on drag and drop in the settings dialog
+* 2.0.0 - 2022/05/05 Refactoring
+* 1.0.0 - 2022/04/05 Initial release
 
-## クレジット
+## Tested Environment
+
+* (Required) AviUtl 1.10 & Extended Editing 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
+* (Coexistence confirmed) patch.aul r42 https://scrapbox.io/ePi5131/patch.aul
+
+## Credits
 
 * Microsoft Research Detours Package https://github.com/microsoft/Detours
 * aviutl_exedit_sdk https://github.com/ePi5131/aviutl_exedit_sdk
 * Common Library https://github.com/hebiiro/Common-Library
 * VOICEVOX https://voicevox.hiroshiba.jp/
-* VOICEVOX:青山龍星
+* VOICEVOX: Aoyama Ryusei
 
-## 作成者情報
- 
-* 作成者 - 蛇色 (へびいろ)
+## Author Information
+
+* Author - Hebiiro (蛇色)
 * GitHub - https://github.com/hebiiro
 * Twitter - https://twitter.com/io_hebiiro
 
-## 免責事項
+## Disclaimer
 
-この作成物および同梱物を使用したことによって生じたすべての障害・損害・不具合等に関しては、私と私の関係者および私の所属するいかなる団体・組織とも、一切の責任を負いません。各自の責任においてご使用ください。
+Neither I, my associates, nor any group or organization I belong to accepts any responsibility for any failure, damage, or malfunction resulting from the use of this work or its bundled files. Please use it at your own risk.

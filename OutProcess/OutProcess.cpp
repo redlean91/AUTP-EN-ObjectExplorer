@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "OutProcess.h"
 #include "OutProcessDialog.h"
-#include "Common/Tracer2.h"
+#include "Common-Library-master/Common/Tracer2.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -2,6 +2,8 @@
 #include "InProcess.h"
 #include "InProcess_Hook.h"
 
+#include <cstring>
+
 //--------------------------------------------------------------------
 
 AviUtlInternal g_auin;
@@ -16,15 +18,41 @@ void initHook(AviUtl::FilterPlugin* fp)
 {
 	MY_TRACE(_T("initHook()\n"));
 
-	g_auin.initExEditAddress();
+	if (!g_auin.initExEditAddress())
+	{
+		MY_TRACE(_T("拡張編集の取得に失敗しました\n"));
+		return;
+	}
+
+	// AviUtl の ini ファイルのパスを取得する。
+	char iniPath[MAX_PATH];
+	GetModuleFileNameA(NULL, iniPath, MAX_PATH);
+	char* slash = strrchr(iniPath, '\\');
+	if (slash) strcpy_s(slash + 1, MAX_PATH - (slash + 1 - iniPath), "ObjectExplorerConfig.ini");
+
+	// ini から拡張編集のフィルタ名を読み込む。
+	char configuredName[256] = {};
+	::GetPrivateProfileStringA("ObjectExplorer", "exedit_filter_name", "", configuredName, sizeof(configuredName), iniPath);
+	MY_TRACE_STR(configuredName);
 
 	// 拡張編集の関数や変数を取得する。
 	DWORD exedit = g_auin.GetExEdit();
 //	true_ExEditWindowProc = (Type_ExEditWindowProc)(exedit + 0x3B620);
 //	true_SettingDialogProc = (Type_SettingDialogProc)(exedit + 0x2CDE0);
-	true_ExEditWindowProc = g_auin.HookExEditWindowProc(fp, hook_ExEditWindowProc);
+	true_ExEditWindowProc = g_auin.HookExEditWindowProc(fp, hook_ExEditWindowProc, configuredName[0] ? configuredName : nullptr);
 	true_SettingDialogProc = g_auin.HookSettingDialogProc(hook_SettingDialogProc);
 	true_AddAlias = g_auin.GetAddAlias();
+
+	// 設定が無い場合は検出したフィルタ名を ini に保存する。
+	if (!configuredName[0])
+	{
+		AviUtl::FilterPlugin* exeditFilter = g_auin.GetFilter(fp, nullptr);
+		if (exeditFilter && exeditFilter->name)
+		{
+			::WritePrivateProfileStringA("ObjectExplorer", "exedit_filter_name", exeditFilter->name, iniPath);
+			MY_TRACE_STR(exeditFilter->name);
+		}
+	}
 
 	// 拡張編集の関数をフックする。
 	DetourTransactionBegin();
@@ -51,7 +79,7 @@ void termHook(AviUtl::FilterPlugin* fp)
 }
 
 // カレントオブジェクトに関連するファイルパスを取得する。
-void getPath(LPTSTR buffer)
+void getPath(LPTSTR buffer, const char* exeditFilterName)
 {
 	// カレントオブジェクトを取得する。
 	int objectIndex = g_auin.GetCurrentObjectIndex();
@@ -124,24 +152,24 @@ BOOL addAliasFile(LPCSTR fileName)
 		::GetPrivateProfileStringA(appName, "_name", "", name, MAX_PATH, fileName);
 		MY_TRACE_TSTR(name);
 		if (::lstrlenA(name) == 0) continue;
-		else if (::lstrcmpA(name, "動画ファイル") == 0) continue;
-		else if (::lstrcmpA(name, "画像ファイル") == 0) continue;
-		else if (::lstrcmpA(name, "音声ファイル") == 0) continue;
-		else if (::lstrcmpA(name, "テキスト") == 0) continue;
-		else if (::lstrcmpA(name, "図形") == 0) continue;
-		else if (::lstrcmpA(name, "フレームバッファ") == 0) continue;
-		else if (::lstrcmpA(name, "音声波形") == 0) continue;
-		else if (::lstrcmpA(name, "シーン") == 0) continue;
-		else if (::lstrcmpA(name, "シーン(音声)") == 0) continue;
-		else if (::lstrcmpA(name, "直前オブジェクト") == 0) continue;
-		else if (::lstrcmpA(name, "標準描画") == 0) continue;
-		else if (::lstrcmpA(name, "拡張描画") == 0) continue;
-		else if (::lstrcmpA(name, "標準再生") == 0) continue;
-		else if (::lstrcmpA(name, "パーティクル出力") == 0) continue;
-		else if (::lstrcmpA(name, "カスタムオブジェクト") == 0) continue;
-		else if (::lstrcmpA(name, "時間制御") == 0) continue;
-		else if (::lstrcmpA(name, "グループ制御") == 0) continue;
-		else if (::lstrcmpA(name, "カメラ制御") == 0) continue;
+		else if (::lstrcmpA(name, "Video file") == 0) continue;
+		else if (::lstrcmpA(name, "Image file") == 0) continue;
+		else if (::lstrcmpA(name, "Audio file") == 0) continue;
+		else if (::lstrcmpA(name, "Text") == 0) continue;
+		else if (::lstrcmpA(name, "Graphic") == 0) continue;
+		else if (::lstrcmpA(name, "Frame buffer") == 0) continue;
+		else if (::lstrcmpA(name, "Audio waveform") == 0) continue;
+		else if (::lstrcmpA(name, "Scene") == 0) continue;
+		else if (::lstrcmpA(name, "Scene(Audio)") == 0) continue;
+		else if (::lstrcmpA(name, "Previous object") == 0) continue;
+		else if (::lstrcmpA(name, "Standard drawing") == 0) continue;
+		else if (::lstrcmpA(name, "Extended drawing") == 0) continue;
+		else if (::lstrcmpA(name, "Standard playback") == 0) continue;
+		else if (::lstrcmpA(name, "Particle object") == 0) continue;
+		else if (::lstrcmpA(name, "Custom object") == 0) continue;
+		else if (::lstrcmpA(name, "Time control") == 0) continue;
+		else if (::lstrcmpA(name, "Group control") == 0) continue;
+		else if (::lstrcmpA(name, "Camera control") == 0) continue;
 
 		// セクションデータを取得する。
 		section.clear();
@@ -216,32 +244,32 @@ LPCSTR getName(ExEdit::Object* object, int filterIndex)
 
 			switch (type)
 			{
-			case 0x00: name = "震える"; break;
-			case 0x01: name = "振り子"; break;
-			case 0x02: name = "弾む"; break;
-			case 0x03: name = "座標の拡大縮小(個別オブジェクト)"; break;
-			case 0x04: name = "画面外から登場"; break;
-			case 0x05: name = "ランダム方向から登場"; break;
-			case 0x06: name = "拡大縮小して登場"; break;
-			case 0x07: name = "ランダム間隔で落ちながら登場"; break;
-			case 0x08: name = "弾んで登場"; break;
-			case 0x09: name = "広がって登場"; break;
-			case 0x0A: name = "起き上がって登場"; break;
-			case 0x0B: name = "何処からともなく登場"; break;
-			case 0x0C: name = "反復移動"; break;
-			case 0x0D: name = "座標の回転(個別オブジェクト)"; break;
-			case 0x0E: name = "立方体(カメラ制御)"; break;
-			case 0x0F: name = "球体(カメラ制御)"; break;
-			case 0x10: name = "砕け散る"; break;
-			case 0x11: name = "点滅"; break;
-			case 0x12: name = "点滅して登場"; break;
-			case 0x13: name = "簡易変形"; break;
-			case 0x14: name = "簡易変形(カメラ制御)"; break;
-			case 0x15: name = "リール回転"; break;
-			case 0x16: name = "万華鏡"; break;
-			case 0x17: name = "円形配置"; break;
-			case 0x18: name = "ランダム配置"; break;
-			default: name = "アニメーション効果"; break;
+			case 0x00: name = "Trembling"; break;
+			case 0x01: name = "Pendulum"; break;
+			case 0x02: name = "Bounce"; break;
+			case 0x03: name = "Scale coordinate(as individual object)"; break;
+			case 0x04: name = "Appeared from off-screen"; break;
+			case 0x05: name = "Appeared from random direction"; break;
+			case 0x06: name = "Appear while scaling"; break;
+			case 0x07: name = "Appear while falling at random interval"; break;
+			case 0x08: name = "Appeare with bounce"; break;
+			case 0x09: name = "Appear spreading"; break;
+			case 0x0A: name = "Appear while rising up"; break;
+			case 0x0B: name = "Appear from nowhere"; break;
+			case 0x0C: name = "Repetitive"; break;
+			case 0x0D: name = "Rotation of the coordinate (individual objects)"; break;
+			case 0x0E: name = "Cube (camera control)"; break;
+			case 0x0F: name = "Sphere (camera control)"; break;
+			case 0x10: name = "Shatter"; break;
+			case 0x11: name = "Blinking"; break;
+			case 0x12: name = "Appear while blinking"; break;
+			case 0x13: name = "Simple deformation"; break;
+			case 0x14: name = "Simple deformation (camera control)"; break;
+			case 0x15: name = "Reel rotation"; break;
+			case 0x16: name = "Kaleidoscope"; break;
+			case 0x17: name = "Circular arrangement"; break;
+			case 0x18: name = "Random location"; break;
+			default: name = "Animation effect"; break;
 			}
 		}
 		return name;
@@ -250,7 +278,7 @@ LPCSTR getName(ExEdit::Object* object, int filterIndex)
 	{
 		BYTE* exdata = g_auin.GetExdata(object, filterIndex);
 		LPCSTR name = (LPCSTR)(exdata + 0x04);
-		if (!name[0]) name = "カスタムオブジェクト";
+		if (!name[0]) name = "Custom object";
 		return name;
 	}
 	else
@@ -293,7 +321,7 @@ BOOL saveAlias(HWND hwnd, int objectIndex, int filterIndex)
 	TCHAR title[MAX_PATH] = "";
 	TCHAR folderName[MAX_PATH] = "";
 	TCHAR fileName[MAX_PATH] = "";
-	TCHAR fileFilter[MAX_PATH] = "エイリアスファイル (*.exa)\0*.exa\0" "すべてのファイル (*.*)\0*.*\0";
+	TCHAR fileFilter[MAX_PATH] = "Alias (*.exa)\0*.exa\0" "Any file (*.*)\0*.*\0";
 
 	::GetWindowText(theApp.m_browser, folderName, MAX_PATH);
 
@@ -306,21 +334,21 @@ BOOL saveAlias(HWND hwnd, int objectIndex, int filterIndex)
 	{
 	case -2:
 		{
-			::StringCbCopy(title, sizeof(title), _T("オブジェクトの保存"));
+			::StringCbCopy(title, sizeof(title), _T("Save object"));
 			::StringCbPrintf(fileName, sizeof(fileName), _T("%hs.exa"), name);
 
 			break;
 		}
 	case -1:
 		{
-			::StringCbCopy(title, sizeof(title), _T("全フィルタの保存"));
-			::StringCbPrintf(fileName, sizeof(fileName), _T("%hsのフィルタ全体.exa"), object->dispname);
+			::StringCbCopy(title, sizeof(title), _T("Save all filters"));
+			::StringCbPrintf(fileName, sizeof(fileName), _T("%hs All Filters.exa"), object->dispname);
 
 			break;
 		}
 	default:
 		{
-			::StringCbCopy(title, sizeof(title), _T("フィルタの保存"));
+			::StringCbCopy(title, sizeof(title), _T("Save filter"));
 			::StringCbPrintf(fileName, sizeof(fileName), _T("%hs.exa"), name);
 
 			break;

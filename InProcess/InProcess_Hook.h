@@ -11,7 +11,7 @@ DECLARE_HOOK_PROC(BOOL, CDECL, AddAlias, (LPCSTR fileName, BOOL flag1, BOOL flag
 
 void initHook(AviUtl::FilterPlugin* fp);
 void termHook(AviUtl::FilterPlugin* fp);
-void getPath(LPTSTR buffer);
+void getPath(LPTSTR buffer, const char* exeditFilterName = "Advanced Editing");
 void clearAliasFile();
 BOOL addAliasFile(LPCSTR fileName);
 void loadAlias();
